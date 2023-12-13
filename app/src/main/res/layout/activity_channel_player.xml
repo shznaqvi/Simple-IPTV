@@ -7,12 +7,14 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
+        app:default_artwork="@color/black"
+        app:resize_mode="fit"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         app:auto_show="true"
         app:controller_layout_id="@layout/exo_playback_control_view_live"
         app:repeat_toggle_modes="none"
-        app:resize_mode="fill"
+        app:use_artwork="true"
         app:surface_type="surface_view"
         app:use_controller="true" />
     <!--    app:controller_layout_id="@layout/exo_playback_control_view_live"-->
@@ -40,4 +42,60 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/channelLogo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="48dp"
+        android:alpha="0.72"
+        android:src="@drawable/casivue_logo" />
+
+    <androidx.drawerlayout.widget.DrawerLayout
+
+        android:id="@+id/drawer_layout"
+        android:layout_width="250dp"
+        android:layout_height="match_parent">
+        <!-- Side drawer -->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <!-- Your header layout if needed -->
+                <include layout="@layout/nav_header" />
+
+                <!-- RecyclerView inside the side drawer -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:scrollbars="vertical" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.navigation.NavigationView>
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <ImageView
+        android:id="@+id/channelnavbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:onClick="toggleChannelNav"
+        android:src="@drawable/live_tv" />
+
+    <ImageView
+        android:id="@+id/resizeMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:onClick="toggleChannelNav"
+        android:src="@drawable/live_tv" />
 </RelativeLayout>

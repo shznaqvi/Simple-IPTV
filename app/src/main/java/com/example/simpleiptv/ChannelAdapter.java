@@ -1,5 +1,6 @@
 package com.example.simpleiptv;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
     private final List<IptvChannel> allChannelList;
     private final List<IptvChannel> filteredChannelList;
     private final Context mContext;
-    private List<IptvChannel> favoriteChannels;
+
 
     // Constructor to initialize with a channel list
     public ChannelAdapter(Context context, List<IptvChannel> channelList) {
@@ -31,18 +32,18 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
         filterAdultChannels();
         this.allChannelList = channelList;
         filteredChannelList = new ArrayList<>();
-        this.favoriteChannels = FavoritesManager.loadFavoriteChannels(context); // Assign loaded favorites here
+        IPTVApplication.favoriteChannels = FavoritesManager.loadFavoriteChannels(context); // Assign loaded favorites here
 
 
     }
 
     public void filterByFavorites() {
-        favoriteChannels = FavoritesManager.loadFavoriteChannels(mContext);
+        IPTVApplication.favoriteChannels = FavoritesManager.loadFavoriteChannels(mContext);
 
         // Filter the channel list to show only favorite channels
         List<IptvChannel> filteredList = new ArrayList<>();
         for (IptvChannel channel : allChannelList) {
-            if (favoriteChannels.contains(channel)) {
+            if (IPTVApplication.favoriteChannels.contains(channel)) {
                 filteredList.add(channel);
             }
         }
@@ -113,7 +114,15 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
     @NonNull
     @Override
     public ChannelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_item, parent, false);
+        Activity activity = (Activity) mContext;
+        String activityName = activity.getClass().getSimpleName();
+        View view;
+        if (activityName.equals("ChannelPlayerActivity")) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_item_nav, parent, false);
+
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_item, parent, false);
+        }
         return new ChannelViewHolder(view);
     }
 
@@ -142,7 +151,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
 
         // Check if the channel is in favorites and update the icon accordingly
-        if (favoriteChannels.contains(channel)) {
+        if (IPTVApplication.favoriteChannels.contains(channel)) {
             holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_filled);
         } else {
             holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_outline);
@@ -150,14 +159,14 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
         // Inside onBindViewHolder
         holder.favoriteIcon.setOnClickListener(view -> {
-            if (favoriteChannels.contains(channel)) {
+            if (IPTVApplication.favoriteChannels.contains(channel)) {
                 FavoritesManager.removeFromFavorites(mContext, channel);
                 holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_outline);
-                favoriteChannels.remove(channel); // Update favorite channels list
+                IPTVApplication.favoriteChannels.remove(channel); // Update favorite channels list
             } else {
                 addToFavorites(channel);
                 holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_filled);
-                favoriteChannels.add(channel); // Update favorite channels list
+                IPTVApplication.favoriteChannels.add(channel); // Update favorite channels list
             }
         });
 
@@ -187,7 +196,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
     // Add a method to update favoriteChannels
     public void updateFavoriteChannels(Context context) {
-        favoriteChannels = FavoritesManager.loadFavoriteChannels(context);
+        IPTVApplication.favoriteChannels = FavoritesManager.loadFavoriteChannels(context);
         notifyDataSetChanged();
     }
 

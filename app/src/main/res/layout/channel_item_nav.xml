@@ -1,0 +1,55 @@
+<!-- item_channel.xml -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="24dp"
+    android:orientation="horizontal"
+    android:padding="1dp">
+
+    <!-- Channel Logo ImageView -->
+    <ImageView
+        android:id="@+id/channel_logo"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:gravity="center_horizontal|center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/casivue_logo_gray" />
+
+
+    <!-- Channel Name TextView -->
+    <TextView
+        android:id="@+id/channel_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:text="Channel Name"
+        android:textSize="12sp"
+
+        />
+
+    <!-- Channel Country TextView -->
+    <TextView
+        android:id="@+id/channel_country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Channel Country"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <!-- Add any other views for additional channel information here -->
+
+
+    <ImageView
+        android:id="@+id/favoriteIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Favorite Icon"
+        android:padding="8dp"
+        android:src="@drawable/ic_favorite_outline"
+        android:visibility="gone" />
+</LinearLayout>

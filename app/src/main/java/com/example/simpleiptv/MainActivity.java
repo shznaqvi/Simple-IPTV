@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Constraints;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
@@ -352,6 +353,10 @@ public class MainActivity extends AppCompatActivity {
         ).setConstraints(constraints).build();
 
         workManager.enqueue(fetchM3URequest);
+        workManager.enqueueUniquePeriodicWork(
+                TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                fetchM3URequest);
 
         observeWork(fetchM3URequest);
         progressIndicator = findViewById(R.id.progressIndicator);

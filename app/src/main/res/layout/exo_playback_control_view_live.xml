@@ -78,6 +78,25 @@
             android:src="@drawable/ic_next"
             app:tint="@color/white" />
 
+        <ImageView
+            android:id="@+id/favoriteIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Favorite Icon"
+            android:padding="8dp"
+            android:src="@drawable/ic_favorite_outline" />
+
+        <!-- MediaRouteButton to trigger Cast dialog -->
+        <!--  <androidx.mediarouter.app.MediaRouteButton
+              android:id="@+id/media_route_button"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentEnd="true"
+              android:layout_margin="16dp"
+              app:buttonTint="@color/white"
+             />-->
+
     </LinearLayout>
 
     <!-- Playback progress and duration -->

@@ -70,5 +70,9 @@ dependencies {
 
     implementation 'com.karumi:dexter:6.2.3'
 
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
+    implementation 'com.google.android.exoplayer:extension-cast:2.19.1'
+    implementation 'com.google.android.gms:play-services-cast-framework:21.4.0' // Google Cast SDK
+
 
 }

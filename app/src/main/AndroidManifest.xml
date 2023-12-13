@@ -41,6 +41,8 @@
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:screenOrientation="landscape" />
+
+
     </application>
 
 </manifest>

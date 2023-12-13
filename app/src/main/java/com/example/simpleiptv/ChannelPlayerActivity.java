@@ -2,16 +2,23 @@ package com.example.simpleiptv;
 
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
@@ -24,7 +31,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
-
+import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 public class ChannelPlayerActivity extends AppCompatActivity implements Player.Listener {
 
@@ -39,6 +47,8 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
     private String channelUrl;
     private TextView channelNametxt;
     private String channelName;
+    private ImageView channelLogo;
+    private ImageView channelnavbutton;
     private final Runnable timeoutRunnable = () -> {
         // Handle timeout: release player or perform any necessary action
         // releasePlayer();
@@ -49,6 +59,12 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
     private IptvChannel currentChannel;
     private boolean buttonPressNext = false;
     private boolean buttonPressPrev = false;
+
+    private PowerManager.WakeLock wakeLock;
+    private ImageView favoriteIcon;
+    private ChannelAdapter channelAdapter;
+    private TextView channleCount;
+    private DrawerLayout drawerLayout;
 
     private void switchChannel() {
         if (this.buttonPressNext) {
@@ -79,6 +95,9 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
 
         playerView = findViewById(R.id.player_view);
         channelNametxt = findViewById(R.id.channelNametxt);
+        channelLogo = findViewById(R.id.channelLogo);
+        channelnavbutton = findViewById(R.id.channelnavbutton);
+        channleCount = findViewById(R.id.channleCount);
 
         // Get the channel URL from Intent extras
         channelPos = getIntent().getIntExtra("channelPos", 0);
@@ -87,11 +106,79 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         channelName = currentChannel.getChannelName();
 
         channelNametxt.setText(channelName);
+        setChannelLogo();
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        RecyclerView recyclerView = navigationView.findViewById(R.id.recycler_view); // Assuming RecyclerView is inside NavigationView
+        drawerLayout = findViewById(R.id.drawer_layout);
+        channelnavbutton.setVisibility(View.VISIBLE);
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Create an instance of ChannelAdapter and pass the channelList to it
+        channelAdapter = new ChannelAdapter(this, IPTVApplication.channelList);
+        recyclerView.setAdapter(channelAdapter);
+        channleCount.setText("(" + channelAdapter.getItemCount() + ")");
+    }
+
+    public void toggleChannelNav(View view) {
+
+// To check if the left drawer (START) is currently open
+        boolean isDrawerOpen = drawerLayout.isDrawerOpen(GravityCompat.START);
+
+        if (isDrawerOpen) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            channelnavbutton.setVisibility(View.VISIBLE);
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START);
+            channelnavbutton.setVisibility(View.GONE);
+
+
+        }
 
     }
 
+
+    private void setChannelLogo() {
+        // Load channel logo using Picasso
+        if (currentChannel.getTvgLogo() != null && !currentChannel.getTvgLogo().isEmpty()) {
+            Picasso.get().load(currentChannel.getTvgLogo()).into(channelLogo);
+        } else {
+            // Optionally, set a placeholder or default image if the URL is empty or null
+            channelLogo.setImageResource(R.drawable.casivue_logo_gray);
+        }
+    }
+
     private void initializePlayer(String videoUrl) {
+        favoriteIcon = findViewById(R.id.favoriteIcon);
+
+        // Check if the channel is in favorites and update the icon accordingly
+        if (IPTVApplication.favoriteChannels.contains(currentChannel)) {
+            favoriteIcon.setImageResource(R.drawable.ic_favorite_filled);
+        } else {
+            favoriteIcon.setImageResource(R.drawable.ic_favorite_outline);
+        }
+
+        // Inside onBindViewHolder
+        favoriteIcon.setOnClickListener(view -> {
+            if (IPTVApplication.favoriteChannels.contains(currentChannel)) {
+                FavoritesManager.removeFromFavorites(this, currentChannel);
+                favoriteIcon.setImageResource(R.drawable.ic_favorite_outline);
+                IPTVApplication.favoriteChannels.remove(currentChannel); // Update favorite channels list
+            } else {
+                addToFavorites(currentChannel);
+                favoriteIcon.setImageResource(R.drawable.ic_favorite_filled);
+                IPTVApplication.favoriteChannels.add(currentChannel); // Update favorite channels list
+            }
+        });
+
         trackSelector = new DefaultTrackSelector(this);
+
+  /*      castManager = new CastManager(this);
+        MediaRouteButton mediaRouteButton = findViewById(R.id.media_route_button); // Replace with your MediaRouteButton
+
+       castManager.initializeCastButton(mediaRouteButton);
+        castManager.setSessionManagerListener();*/
         // Global settings.
 
 /*
@@ -145,6 +232,23 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
                     ObjectAnimator reverseAnimator = ObjectAnimator.ofFloat(channelNametxt, "alpha", 0.8f, 0f);
                     reverseAnimator.setDuration(1000);
                     reverseAnimator.start();
+
+                    ObjectAnimator reverseAnimator2 = ObjectAnimator.ofFloat(channelLogo, "alpha", 0.72f, 0f);
+                    reverseAnimator2.setDuration(1000);
+                    reverseAnimator2.start();
+
+                    if (player.getVideoFormat() != null) {
+                        int width = player.getVideoFormat().width;
+                        int height = player.getVideoFormat().height;
+                        Log.d(TAG, "onPlayerStateChanged(width): " + width);
+                        Log.d(TAG, "onPlayerStateChanged(height): " + height);
+
+                        if (width != Format.NO_VALUE && height != Format.NO_VALUE) {
+                            int videoAspectRatio = width / height;
+                            // Set the aspect ratio of the PlayerView's container
+                            //  playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+                        }
+                    }
                 }
                 if (playbackState == Player.STATE_BUFFERING) {
 
@@ -152,9 +256,11 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
                     // Create an ObjectAnimator to animate the alpha property of the TextView
                     ObjectAnimator animator = ObjectAnimator.ofFloat(channelNametxt, "alpha", 0f, 0.8f);
                     animator.setDuration(1000); // Set the animation duration in milliseconds
-
-// Start the animation
                     animator.start();
+
+                    ObjectAnimator animator2 = ObjectAnimator.ofFloat(channelLogo, "alpha", 0f, 0.72f);
+                    animator2.setDuration(1000); // Set the animation duration in milliseconds
+                    animator2.start();
                 }
             }
 
@@ -169,6 +275,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
                     int responseCode = responseCodeException.responseCode;
                     // Handle the 404 error (Not Found) or other response codes
                     IPTVApplication.channelList.remove(currentChannel);
+                    channelAdapter.notifyDataSetChanged();
 
 
                     if (responseCode == 404) {
@@ -216,6 +323,13 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         super.onResume();
         if ((Util.SDK_INT < 24 || player == null)) {
             initializePlayer(channelUrl);
+            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (powerManager != null) {
+                wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                        PowerManager.ON_AFTER_RELEASE, "YourApp:WakeLockTag");
+                wakeLock.acquire();
+            }
         }
     }
 
@@ -225,6 +339,8 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         if (Util.SDK_INT < 24) {
             releasePlayer();
         }
+
+
     }
 
     @Override
@@ -239,6 +355,10 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         if (player != null) {
             player.release();
             player = null;
+        }
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+            wakeLock = null;
         }
     }
 
@@ -271,6 +391,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
             channelUrl = currentChannel.getChannelUrl();
             channelName = currentChannel.getChannelName();
             channelNametxt.setText(channelName);
+            setChannelLogo();
             releasePlayer();
             initializePlayer(channelUrl);
             buttonPressNext = true;
@@ -285,12 +406,36 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
             channelUrl = currentChannel.getChannelUrl();
             channelName = currentChannel.getChannelName();
             channelNametxt.setText(channelName);
+            setChannelLogo();
             releasePlayer();
             initializePlayer(channelUrl);
             buttonPressNext = false;
             buttonPressPrev = true;
 
         }
+    }
+
+/*    public void onStartCastingButtonClick(View view) {
+        // Call startCasting() method from CastManager when the button is clicked
+        String mediaUrl = currentChannel.getChannelUrl();
+        String title = currentChannel.getChannelName();
+        castManager.loadMediaForCasting(mediaUrl, title);
+    }*/
+
+
+    private void addToFavorites(IptvChannel channel) {
+        FavoritesManager.addToFavorites(this, channel);
+        // Notify the user that the channel has been added to favorites
+        Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+        updateFavoriteChannels(this);
+        // You might update the heart icon here to indicate it's now a favorite
+        // For example, change the icon from outline to filled heart
+        // holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_filled);
+    }
+
+    // Add a method to update favoriteChannels
+    public void updateFavoriteChannels(Context context) {
+        IPTVApplication.favoriteChannels = FavoritesManager.loadFavoriteChannels(context);
     }
 
 

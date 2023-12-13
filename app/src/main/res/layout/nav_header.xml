@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Example of a profile picture -->
+    <ImageView
+        android:id="@+id/image_profile"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:src="@drawable/casivue_logo" />
+
+    <!-- Example of user's name -->
+    <TextView
+        android:id="@+id/listTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="Channels"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <!-- Example of user's email -->
+    <TextView
+        android:id="@+id/channleCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+</LinearLayout>

@@ -16,6 +16,7 @@ public class IPTVApplication extends Application implements Configuration.Provid
     private static final String TAG = "IPTVApplication";
     public static boolean permissionCheck = false;
     public static List<IptvChannel> channelList;
+    public static List<IptvChannel> favoriteChannels;
     private static IPTVApplication instance;
 
     public static IPTVApplication getInstance() {
@@ -52,6 +53,8 @@ public class IPTVApplication extends Application implements Configuration.Provid
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        //castContext = CastContext.getSharedInstance(this);
 
        /* Log.d(TAG, "onCreate: This is IPTVApplication");
         WorkManager.initialize(this, new Configuration.Builder().build());
