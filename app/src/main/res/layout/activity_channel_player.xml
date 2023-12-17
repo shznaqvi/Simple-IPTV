@@ -92,10 +92,25 @@
         android:src="@drawable/live_tv" />
 
     <ImageView
+        android:id="@+id/hdchannel"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp"
+        android:alpha="0.22"
+        android:onClick="toggleChannelNav"
+        android:scaleType="fitCenter"
+        android:src="@drawable/hd"
+        android:visibility="gone" />
+
+    <ImageView
         android:id="@+id/resizeMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:onClick="toggleChannelNav"
         android:src="@drawable/live_tv" />
 </RelativeLayout>

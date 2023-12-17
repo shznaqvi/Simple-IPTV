@@ -1,7 +1,5 @@
 package com.example.simpleiptv;
 
-import static com.example.simpleiptv.IPTVApplication.isH264DecoderSupported;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,12 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Constraints;
 import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
@@ -48,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.loading_screen); // Display the loading screen initially
 
         checkPermissions();
-        isH264DecoderSupported();
+       // isH264DecoderSupported();
 
-        workManager = WorkManager.getInstance(this);
+        /*workManager = WorkManager.getInstance(this);
         initializeWork();
-
+*/
         initializeApp();
 
 
@@ -341,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeWork() {
+ /*   private void initializeWork() {
         if (isFileExists("country_tld.json")) {
             OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(CountryTLDWorker.class).build();
             workManager.enqueue(request);
@@ -360,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
         observeWork(fetchM3URequest);
         progressIndicator = findViewById(R.id.progressIndicator);
-    }
+    }*/
 
 
     private void observeWork(WorkRequest workRequest) {

@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+    <text
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillColor="#000000"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="HD"
+        android:textSize="150dp"
+        android:textStyle="bold" />
+    <!-- HD shape -->
+
+    <!-- HD text -->
+    <text
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillColor="#000000"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="HD"
+        android:textSize="105dp"
+        android:textStyle="bold" />
+</vector>

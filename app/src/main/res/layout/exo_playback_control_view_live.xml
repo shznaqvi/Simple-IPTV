@@ -80,10 +80,13 @@
 
         <ImageView
             android:id="@+id/favoriteIcon"
-            android:layout_width="wrap_content"
+            style="?android:attr/borderlessButtonStyle"
+
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:contentDescription="Favorite Icon"
-            android:padding="8dp"
+            android:padding="12dp"
             android:src="@drawable/ic_favorite_outline" />
 
         <!-- MediaRouteButton to trigger Cast dialog -->
