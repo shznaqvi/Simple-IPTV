@@ -31,7 +31,6 @@ import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
-import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -89,8 +88,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_player);
 
-        // Enable immersive mode
-        hideSystemUI();
+
 
         loadingIndicator = findViewById(R.id.loading_indicator);
 
@@ -326,8 +324,10 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
             player.setMediaItem(mediaItem);
             player.prepare();
             player.setPlayWhenReady(true);
+            playerView.setUseController(true);
 
             playerView.setPlayer(player);
+
 
             playerView.findViewById(R.id.exo_next).setOnClickListener(v -> loadNextChannel());
             playerView.findViewById(R.id.exo_prev).setOnClickListener(v -> loadPreviousChannel());
@@ -346,33 +346,33 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
     @Override
     protected void onResume() {
         super.onResume();
-        if ((Util.SDK_INT < 24 || player == null)) {
-            releasePlayer();
-            initializePlayer(channelUrl);
-            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            if (powerManager != null) {
-                wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
-                        PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                        PowerManager.ON_AFTER_RELEASE, "YourApp:WakeLockTag");
-                wakeLock.acquire();
-            }
+
+        // Enable immersive mode
+        hideSystemUI();
+        releasePlayer();
+        initializePlayer(channelUrl);
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                    PowerManager.ON_AFTER_RELEASE, "YourApp:WakeLockTag");
+            wakeLock.acquire();
         }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (Util.SDK_INT < 24) {
             releasePlayer();
-        }
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (Util.SDK_INT >= 24) {
             releasePlayer();
-        }
+
     }
 
     @Override
@@ -395,6 +395,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (timeoutHandler.hasCallbacks(timeoutRunnable)) {
                 timeoutHandler.removeCallbacks(timeoutRunnable);
+
             }
         }
     }
@@ -423,6 +424,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
 
     private void loadNextChannel() {
         hdchannel.setVisibility(View.GONE);
+        Toast.makeText(this, "Next Channel", Toast.LENGTH_SHORT).show();
 
         if (channelPos < IPTVApplication.channelList.size() - 1) {
             channelPos++;
@@ -440,6 +442,7 @@ public class ChannelPlayerActivity extends AppCompatActivity implements Player.L
 
     private void loadPreviousChannel() {
         hdchannel.setVisibility(View.GONE);
+        Toast.makeText(this, "Previous Channel", Toast.LENGTH_SHORT).show();
         if (channelPos > 0) {
             channelPos--;
             currentChannel = IPTVApplication.channelList.get(channelPos);

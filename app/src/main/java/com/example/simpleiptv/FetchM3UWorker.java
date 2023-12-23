@@ -41,7 +41,8 @@ public class FetchM3UWorker extends Worker {
     @Override
     public Result doWork() {
         // Fetch M3U content
-        String urlString = "https://iptv-org.github.io/iptv/index.nsfw.m3u";
+        //String urlString = "https://iptv-org.github.io/iptv/index.nsfw.m3u";
+        String urlString = "https://iptv-org.github.io/iptv/index.category.m3u";
         try {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

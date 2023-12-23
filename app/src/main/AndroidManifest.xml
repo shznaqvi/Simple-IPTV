@@ -43,7 +43,9 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="landscape" />
 
-
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9590337451144312~5301146720" />
     </application>
 
 </manifest>

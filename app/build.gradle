@@ -72,7 +72,11 @@ dependencies {
 
     implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
     implementation 'com.google.android.exoplayer:extension-cast:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.1'
     implementation 'com.google.android.gms:play-services-cast-framework:21.4.0' // Google Cast SDK
+
+    implementation 'com.google.android.gms:play-services-ads:22.6.0'
 
 
 }
